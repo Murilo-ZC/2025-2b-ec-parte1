@@ -4,7 +4,7 @@ Pessoal, vamos continuar estudando os padrões de como desenvolver soluções de
 
 ## 1. Single Responsiblity Principle (Princípio da responsabilidade única)
 
-O princípio diz que: ***Uma classe deve ter uma, e somente uma, funcionalidade***.
+O princípio diz que: ***Uma classe deve ter apenas um motivo para mudar***.
 
 Esse princípio declara que uma classe deve ser especializada em um único assunto e possuir apenas uma responsabilidade dentro do software, ou seja, a classe deve ter uma única tarefa ou ação para executar.
 
@@ -21,6 +21,29 @@ A violação do Single Responsibility Principle pode gerar alguns problemas, sen
 - **Dificuldades na implementação de testes automatizados** — É difícil de “mockar” esse tipo de classe;
 - **Dificuldades para reaproveitar o código.**
 
+```java
+// Violação do SRP
+public class Pedido {
+    public void calcularTotal() { /* ... */ }
+    public void salvarNoBanco() { /* ... */ } // responsabilidade de persistência
+    public void enviarEmailConfirmacao() { /* ... */ } // responsabilidade de notificação
+}
+
+// Correção aplicando SRP
+public class Pedido {
+    public void calcularTotal() { /* ... */ }
+}
+
+public class PedidoRepository {
+    public void salvar(Pedido pedido) { /* ... */ }
+}
+
+public class EmailService {
+    public void enviarConfirmacao(Pedido pedido) { /* ... */ }
+}
+
+```
+
 ## 2. Open-Closed Principle (Princípio Aberto-Fechado)
 
 Este princípio tem como definição: ***Objetos ou entidades devem estar abertos para extensão, mas fechados para modificação***. Isso significa que quando novos comportamentos e recursos precisam ser adicionados no software, devemos estender e não alterar o código fonte original.
@@ -30,6 +53,37 @@ Este princípio tem como definição: ***Objetos ou entidades devem estar aberto
 Denovo, uma pergunta excelente! Perceba que os princípios do S.O.L.I.D. são recomendações e não regras fechadas. Eles vão ajudar a manter o código que for desenvolvido. Mas ainda não respondi a pergunta: como modificar só extendendo um comportamento? Lembram que quando estavamos estudando os pilares da orientação a objeto, vimos que existem alguns mecanismos que permitem confirmar que um comportamento será implementado?
 
 Se você lembrou dos contratos, das interfaces, ou mesmo da herança, você está correto aqui! Importante perceber, que em geral fazemos extensões com o uso de interfaces. O objetivo deste princípio é evitar alterar uma classe já existente para adicionar um novo comportamento, pois corremos um sério risco de introduzir bugs em algo que já estava funcionando.
+
+```java
+// Sem OCP — cada novo tipo exige modificar a classe
+public class CalculadoraDesconto {
+    public double calcular(String tipoCliente, double valor) {
+        if (tipoCliente.equals("VIP")) return valor * 0.9;
+        if (tipoCliente.equals("NORMAL")) return valor * 0.95;
+        return valor;
+    }
+}
+
+// Aplicando OCP com Strategy
+public interface Desconto {
+    double aplicar(double valor);
+}
+
+public class DescontoVip implements Desconto {
+    public double aplicar(double valor) { return valor * 0.9; }
+}
+
+public class DescontoNormal implements Desconto {
+    public double aplicar(double valor) { return valor * 0.95; }
+}
+
+public class CalculadoraDesconto {
+    public double calcular(Desconto desconto, double valor) {
+        return desconto.aplicar(valor);
+    }
+}
+
+```
 
 ## 3. Liskov Substitution Principle (Princípio da substituição de Liskov)
 
@@ -45,11 +99,66 @@ Exemplos de violação do LSP:
 - Lançar uma exceção inesperada;
 - Retornar valores de tipos diferentes da classe base.
 
+```java
+// Exemplo clássico de violação do LSP
+class Retangulo {
+    protected int largura;
+    protected int altura;
+
+    public void setLargura(int largura) { this.largura = largura; }
+    public void setAltura(int altura) { this.altura = altura; }
+
+    public int getArea() { return largura * altura; }
+}
+
+class Quadrado extends Retangulo {
+    @Override
+    public void setLargura(int largura) {
+        this.largura = this.altura = largura;
+    }
+
+    @Override
+    public void setAltura(int altura) {
+        this.largura = this.altura = altura;
+    }
+}
+
+// Problema: ao usar um Quadrado como Retângulo, a área esperada pode ser incorreta.
+
+```
+
 ## 4. Interface Segregation Principle (Princípio da Segregação da Interface)
 
 O que nos diz o princípio: ***Uma classe não deve ser forçada a implementar interfaces e métodos que não irão utilizar.*** Esse princípio basicamente diz que é melhor criar interfaces mais específicas ao invés de termos uma única interface genérica.
 
 Desta forma, devemos preferir desenvolver mais itnerfaces menores e específicas, em detrimento de interfaces grandes e com muitas funcionalidades.
+
+```java
+// Violação do ISP
+public interface Ave {
+    void voar();
+    void nadar();
+}
+
+public class Pinguim implements Ave {
+    public void voar() { /* Pinguim não voa */ }
+    public void nadar() { System.out.println("Nadando!"); }
+}
+
+// Correção aplicando ISP
+public interface AveQueVoa {
+    void voar();
+}
+
+public interface AveQueNada {
+    void nadar();
+}
+
+public class Pinguim implements AveQueNada {
+    public void nadar() { System.out.println("Nadando!"); }
+}
+
+```
 
 ## 5. Dependency Inversion Principle (Princípio da inversão da dependência)
 
@@ -57,5 +166,40 @@ O princípio nos diz: ***Dependa de abstrações e não de implementações***. 
 
 Por exemplo, em vez de uma classe Pedido depender diretamente de MySQLRepositorio, ela depende de uma interface RepositorioPedidos. Assim, você pode trocar o banco sem alterar o código principal.
 
-## 6. Exemplo
+```java
+// Sem DIP
+public class PedidoService {
+    private MySQLRepositorio repo = new MySQLRepositorio();
+    public void salvar(Pedido pedido) {
+        repo.salvar(pedido);
+    }
+}
+
+// Aplicando DIP
+public interface RepositorioPedidos {
+    void salvar(Pedido pedido);
+}
+
+public class MySQLRepositorio implements RepositorioPedidos {
+    public void salvar(Pedido pedido) { /* ... */ }
+}
+
+public class PedidoService {
+    private final RepositorioPedidos repo;
+
+    public PedidoService(RepositorioPedidos repo) {
+        this.repo = repo;
+    }
+
+    public void salvar(Pedido pedido) {
+        repo.salvar(pedido);
+    }
+}
+
+// Uso
+RepositorioPedidos repo = new MySQLRepositorio();
+PedidoService service = new PedidoService(repo);
+
+```
+
 
