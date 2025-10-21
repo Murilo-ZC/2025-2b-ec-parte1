@@ -1,0 +1,61 @@
+# Aula 02 - S.O.L.I.D.
+
+Pessoal, vamos continuar estudando os padrões de como desenvolver soluções de software.
+
+## 1. Single Responsiblity Principle (Princípio da responsabilidade única)
+
+O princípio diz que: ***Uma classe deve ter uma, e somente uma, funcionalidade***.
+
+Esse princípio declara que uma classe deve ser especializada em um único assunto e possuir apenas uma responsabilidade dentro do software, ou seja, a classe deve ter uma única tarefa ou ação para executar.
+
+> `Murilão ela deve ter um método só?`
+
+Ótima pergunta! Não necessáriamente. O importante é que todos os métodos desenvolvidos da classe façam sentindo quanto ao objetivo que foi estabelecido para a classe. Isso reduz o acoplamento e torna o código mais simples de manter.
+
+Quando estamos aprendendo programação orientada a objetos, sem sabermos, damos a uma classe mais de uma responsabilidade e acabamos criando classes que fazem de tudo — *God Class*. Num primeiro momento isso pode parecer eficiente, mas como as responsabilidades acabam se misturando, quando há necessidade de realizar alterações nessa classe, será difícil modificar uma dessas responsabilidades sem comprometer as outras. Toda alteração acaba sendo introduzida com um certo nível de incerteza em nosso sistema.
+
+A violação do Single Responsibility Principle pode gerar alguns problemas, sendo eles:
+
+- **Falta de coesão** — uma classe não deve assumir responsabilidades que não são suas;
+- **Alto acoplamento** — Mais responsabilidades geram um maior nível de dependências, deixando o sistema engessado e frágil para alterações;
+- **Dificuldades na implementação de testes automatizados** — É difícil de “mockar” esse tipo de classe;
+- **Dificuldades para reaproveitar o código.**
+
+## 2. Open-Closed Principle (Princípio Aberto-Fechado)
+
+Este princípio tem como definição: ***Objetos ou entidades devem estar abertos para extensão, mas fechados para modificação***. Isso significa que quando novos comportamentos e recursos precisam ser adicionados no software, devemos estender e não alterar o código fonte original.
+
+> `Mas Murilão, como vamos fazer isso? Não é igual modificar e não modificar ao mesmo tempo?`
+
+Denovo, uma pergunta excelente! Perceba que os princípios do S.O.L.I.D. são recomendações e não regras fechadas. Eles vão ajudar a manter o código que for desenvolvido. Mas ainda não respondi a pergunta: como modificar só extendendo um comportamento? Lembram que quando estavamos estudando os pilares da orientação a objeto, vimos que existem alguns mecanismos que permitem confirmar que um comportamento será implementado?
+
+Se você lembrou dos contratos, das interfaces, ou mesmo da herança, você está correto aqui! Importante perceber, que em geral fazemos extensões com o uso de interfaces. O objetivo deste princípio é evitar alterar uma classe já existente para adicionar um novo comportamento, pois corremos um sério risco de introduzir bugs em algo que já estava funcionando.
+
+## 3. Liskov Substitution Principle (Princípio da substituição de Liskov)
+
+Princípio da substituição de Liskov — ***Uma classe derivada deve ser substituível por sua classe base***. As subclasses devem manter o comportamento lógico e coerente da superclasse.
+
+Particularmente, acho esse o princípio mais dificil de se dominar por sua sutileza. Ao mesmo tempo, peço que vocês observem ele com calma. Ele está trazendo a coesão para o comportamento polimórfico seguro. Como a classe pai define um comportamento, as classes filhas devem seguir aquele padrão, ou assinatura. Assim, quando qualquer uma das classes filhas for utilizada, em um local em que é esperado a classe pai, o tipo de retorno e o comportamento daquele objeto estará seguindo esse padrão.
+
+**Observação**: Você deve ter reparado que em alguns lugares eu utilizei classe pai/filha, em outros classe base/derivada, superclasse/subclasse e temos também classe mãe/filha. São todos sinônimos no contexto de demonstrar a hirarquia de classes em um projeto orientado a objetos.
+
+Exemplos de violação do LSP:
+
+- Sobrescrever/implementar um método que não faz nada;
+- Lançar uma exceção inesperada;
+- Retornar valores de tipos diferentes da classe base.
+
+## 4. Interface Segregation Principle (Princípio da Segregação da Interface)
+
+O que nos diz o princípio: ***Uma classe não deve ser forçada a implementar interfaces e métodos que não irão utilizar.*** Esse princípio basicamente diz que é melhor criar interfaces mais específicas ao invés de termos uma única interface genérica.
+
+Desta forma, devemos preferir desenvolver mais itnerfaces menores e específicas, em detrimento de interfaces grandes e com muitas funcionalidades.
+
+## 5. Dependency Inversion Principle (Princípio da inversão da dependência)
+
+O princípio nos diz: ***Dependa de abstrações e não de implementações***. As classes de alto nível não devem depender diretamente de classes de baixo nível, mas sim de interfaces ou classes abstratas. 
+
+Por exemplo, em vez de uma classe Pedido depender diretamente de MySQLRepositorio, ela depende de uma interface RepositorioPedidos. Assim, você pode trocar o banco sem alterar o código principal.
+
+## 6. Exemplo
+
