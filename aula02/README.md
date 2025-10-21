@@ -202,4 +202,8 @@ PedidoService service = new PedidoService(repo);
 
 ```
 
+## 6. Recomendação Extra
 
+Nada melhor que ouvir de quem cunhou e popularizou os termos:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zHiWqnTWsn4?si=TVc7IN8t_FmLRNra" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
