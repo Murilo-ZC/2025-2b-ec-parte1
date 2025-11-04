@@ -1,5 +1,6 @@
 interface Renderer { 
-    void drawCircle(int radius); void drawRect(int w,int h); 
+    void drawCircle(int radius); 
+    void drawRect(int w,int h); 
     }
 
 
